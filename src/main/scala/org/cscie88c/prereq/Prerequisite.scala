@@ -12,7 +12,7 @@ object Prerequisite {
       .toList.tail // drop header row
       .map(CustomerTransaction(_))
 
-  // a function for returning a list retail transactions with amounts greater than $100
+  // a function for returning a list retail transactions with amounts less than $100
   def getFilteredTransactions(transactions: List[CustomerTransaction]): List[CustomerTransaction] = 
     transactions.filter(_.transactionAmount < 100)
   
