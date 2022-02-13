@@ -28,6 +28,9 @@ object Dependencies {
 
     // logging
     "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
-    "ch.qos.logback" % "logback-classic" % "1.2.3"
+    "ch.qos.logback" % "logback-classic" % "1.2.3",
+
+    // abstract algebra
+    "com.twitter" % "algebird_2.11" % "0.12.2"
   )
 }
