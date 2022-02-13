@@ -33,6 +33,15 @@ class UtilFunctionsPropertyTest
     forAll(triplesGen) { (pair: (Int, Int, Int)) =>
       UtilFunctions.pythTest(pair._2, pair._1, pair._3) shouldBe true
     }
+  }
 
+  test("pythTriplesUpto100 of (x,y,z) is also a pythTriple of (2y,2x,2z)") {
+    forAll(triplesGen) { (pair: (Int, Int, Int)) =>
+      UtilFunctions.pythTest(
+        pair._2 * 2,
+        pair._1 * 2,
+        pair._3 * 2
+      ) shouldBe true
+    }
   }
 }
