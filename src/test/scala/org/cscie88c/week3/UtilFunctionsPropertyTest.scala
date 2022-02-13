@@ -4,13 +4,14 @@ import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import org.scalacheck._
+import scala.annotation.meta.param
 
 class UtilFunctionsPropertyTest
     extends AnyFunSuite
        with Matchers
        with ScalaCheckPropertyChecks {
 
-  val triplesGen: Gen[(Int, Int, Int)] = ???
+  val triplesGen: Gen[(Int, Int, Int)] = Gen.oneOf(UtilFunctions.pythTriplesUpto100)
 
   test("mult2 result test") {
     forAll { (x: Int, y: Int) =>
@@ -18,5 +19,16 @@ class UtilFunctionsPropertyTest
     }
   }
 
-  // write more property tests below
+  test("mult2 maintains distributive property") {
+    forAll { (x: Int, y: Int, z: Int) =>
+      UtilFunctions.mult2(x, y + z) shouldBe UtilFunctions.mult2(x, y) + UtilFunctions.mult2(x, z)
+    }
+  }
+
+  test("pythTriplesUpto100 of (x,y,z) is also a pythTriple of (y,x,z)") {
+    forAll(triplesGen) { (pair: (Int, Int, Int)) => 
+      UtilFunctions.pythTest(pair._2,pair._1,pair._3) shouldBe (true) 
+    }
+    
+  }
 }
