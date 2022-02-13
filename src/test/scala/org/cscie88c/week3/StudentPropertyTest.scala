@@ -14,12 +14,16 @@ class StudentPropertyTest
     email <- Gen.alphaStr
     subject <- Gen.oneOf("Math", "English", "Science")
     score <- Gen.chooseNum(0, 100)
-  } yield Student(name,email,subject,score)
+  } yield Student(name, email, subject, score)
 
   // complete the student list generator below if attempting bonus problem
   // val studentListGen: Gen[List[Student]] = ???
 
   test("description contains name and email") {
-    forAll(studentGen){(s: Student) => s.description.contains(s.name) && s.description.contains(s.email) shouldBe (true)}
+    forAll(studentGen) { (s: Student) =>
+      s.description.contains(s.name) && s
+        .description
+        .contains(s.email) shouldBe true
+    }
   }
 }

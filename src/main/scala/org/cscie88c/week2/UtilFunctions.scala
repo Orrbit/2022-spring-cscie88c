@@ -4,6 +4,6 @@ object UtilFunctions {
 
   // complete the functions below
   def maximum(a: Int, b: Int): Int = if (a > b) a else b
-  def average(a: Int, b: Int): Double = (a+b) / 2.0
+  def average(a: Int, b: Int): Double = (a + b) / 2.0
 
 }
