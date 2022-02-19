@@ -1,6 +1,6 @@
 package org.cscie88c.week4
 
-import org.cscie88c.testutils.{StandardTest}
+import org.cscie88c.testutils.{ StandardTest }
 
 class ListUtilsTest extends StandardTest {
   "ListUtils" when {
@@ -8,7 +8,7 @@ class ListUtilsTest extends StandardTest {
       "return the correct value" in {
         // write unit test here
       }
-    
+
     }
 
     // write unit tests for zeroes, and other functions here
