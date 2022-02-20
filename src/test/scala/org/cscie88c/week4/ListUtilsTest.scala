@@ -21,7 +21,48 @@ class ListUtilsTest extends StandardTest {
         zeros.size should be(100)
       }
     }
-    
+
+    "calling charCounts" should {
+      "return correct mapping counts for 'Hello world'" in {
+        val expected: Map[Char, Int] = Map(
+          'e' -> 1,
+          'l' -> 3,
+          'H' -> 1,
+          'r' -> 1,
+          'w' -> 1,
+          'o' -> 2,
+          'd' -> 1
+        )
+        ListUtils.charCounts("Hello world") should be(expected)
+      }
+
+      "return correct mapping counts for a panagram" in {
+        val actualPanagramCounts =
+          ListUtils.charCounts("The quick brown fox jumps over the lazy dog");
+        val actualChars = actualPanagramCounts.keySet.map(_.toLower)
+        actualChars should be(('a' to 'z').toSet)
+      }
+    }
+
+    "calling topN" should {
+      "return correct top 2 frequencies for 'Hello world'" in {
+        val helloWorldMap = Map(
+          'e' -> 1,
+          'l' -> 3,
+          'H' -> 1,
+          'r' -> 1,
+          'w' -> 1,
+          'o' -> 2,
+          'd' -> 1
+        )
+        val expected = Map(
+          'l' -> 3,
+          'o' -> 2
+        )
+        ListUtils.topN(2)(helloWorldMap) should be(expected)
+      }
+    }
+
   }
 
 }
