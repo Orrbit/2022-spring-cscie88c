@@ -9,13 +9,26 @@ class FunctionUtilsTest extends StandardTest {
     // Problem 1 unit tests
     "calling colorToCode" should {
       "return the correct value for white" in {
-        // write unit tests here
+        FunctionUtils.colorToCode("White") should be((255, 255, 255))
+      }
+
+      "return the correct value for lime" in {
+        FunctionUtils.colorToCode("Lime") should be((0, 255, 0))
       }
     }
 
     "calling fizzBuzzString" should {
-      "return the correct value" in {
-        // write unit tests here
+      "return the correct when divisable by 3 and 5" in {
+        FunctionUtils.fizzBuzzString(15) should be("FizzBuzz")
+      }
+      "return the correct when divisable by only 3" in {
+        FunctionUtils.fizzBuzzString(9) should be("Fizz")
+      }
+      "return the correct when divisable by only 5" in {
+        FunctionUtils.fizzBuzzString(10) should be("Buzz")
+      }
+      "return the correct when divisable by neither 3 nor 5" in {
+        FunctionUtils.fizzBuzzString(2) should be("2")
       }
     }
 
@@ -24,7 +37,7 @@ class FunctionUtilsTest extends StandardTest {
         // write unit tests here
       }
     }
-    
+
     // Problem 2 unit tests
 
     // Problem 3 unit tests
