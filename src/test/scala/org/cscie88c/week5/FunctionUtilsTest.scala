@@ -6,7 +6,6 @@ import FunctionUtils.CustomerTransaction
 // run using: sbt "testOnly org.cscie88c.week5.FunctionUtilsTest"
 class FunctionUtilsTest extends StandardTest {
   "FunctionUtils" when {
-    // Problem 1 unit tests
     "calling colorToCode" should {
       "return the correct value for white" in {
         FunctionUtils.colorToCode("White") should be((255, 255, 255))
@@ -34,11 +33,43 @@ class FunctionUtilsTest extends StandardTest {
 
     "calling fizzBuzz" should {
       "return the correct value" in {
-        // write unit tests here
+        val expected: List[String] =
+          "1" :: "2" :: "Fizz" :: "4" :: "Buzz" :: "Fizz" :: Nil
+        FunctionUtils.fizzBuzz(6) should be(expected)
       }
     }
 
-    // Problem 2 unit tests
+    "calling tanDegrees" should {
+      "return not defined at 90" in {
+        FunctionUtils.tanDegrees.isDefinedAt(90) should be(false)
+      }
+
+      "return not defined at -90" in {
+        FunctionUtils.tanDegrees.isDefinedAt(-90) should be(false)
+      }
+
+      "return defined at 0" in {
+        FunctionUtils.tanDegrees.isDefinedAt(0) should be(true)
+      }
+    }
+
+    "calling totalHighValueTransactions" should {
+      "return only sum of high value transactions" in {
+        val testTransactions: List[CustomerTransaction] =
+          CustomerTransaction("abc", "01-02-2022", 1000) :: CustomerTransaction(
+            "abc",
+            "01-02-2022",
+            101
+          ) :: CustomerTransaction(
+            "efg",
+            "01-02-2022",
+            100
+          ) :: CustomerTransaction("hij", "01-02-2022", 17) :: Nil
+        FunctionUtils.totalHighValueTransactions(testTransactions) should be(
+          1101
+        )
+      }
+    }
 
     // Problem 3 unit tests
 

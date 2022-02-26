@@ -30,11 +30,17 @@ object FunctionUtils {
   def fizzBuzz(n: Int): List[String] = (1 to n).toList.map(fizzBuzzString(_))
 
   // Problem 2
-  def tanDegrees: PartialFunction[Double, Double] = ???
+  def tanDegrees: PartialFunction[Double, Double] = {
+    case x if x != -90 && x != 90 => Math.tan(x)
+  }
 
   def totalHighValueTransactions(
       transactionList: List[CustomerTransaction]
-    ): Double = ???
+    ): Double = transactionList
+    .collect({
+      case CustomerTransaction(_, _, amt) if amt > 100 => amt
+    })
+    .sum
 
   // Problem 3
   def flip2[A, B, C](f: (A, B) => C): (B, A) => C = ???
