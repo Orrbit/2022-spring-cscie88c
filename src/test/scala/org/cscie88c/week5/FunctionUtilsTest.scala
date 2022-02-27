@@ -71,9 +71,24 @@ class FunctionUtilsTest extends StandardTest {
       }
     }
 
-    // Problem 3 unit tests
+    "calling flip2" should {
+      "return the correct value when flipped variables" in {
+        FunctionUtils.flip2(Math.pow)(5, 2) should be(Math.pow(2, 5))
+      }
+    }
 
-    // Bonus unit tests
+    "calling sampleList" should {
+      "return a sample list of 5 Ints" in {
+        val in: List[Int] = (1 to 10).toList
+        val expected: List[Int] = (1 to 5).toList
+        FunctionUtils.sampleList(in) should be(expected)
+      }
+      "return a sample list of 5 Strings" in {
+        val in: List[String] = ('a' to 'z').toList.map(c => c.toString)
+        val expected: List[String] = ('a' to 'e').toList.map(c => c.toString)
+        FunctionUtils.sampleList(in) should be(expected)
+      }
+    }
   }
 
 }

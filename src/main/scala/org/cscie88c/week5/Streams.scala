@@ -13,14 +13,23 @@ object Streams {
       hasCurrentShots: Boolean
     )
 
-  val mult5: LazyList[Int] = ???
+  val mult5: LazyList[Int] = LazyList.range(0, 100, 5)
 
-  val randIntStream: LazyList[Int] = ???
+  val randIntStream: LazyList[Int] = LazyList.continually(rnd.nextInt(15))
 
-  val dogs: LazyList[Dog] = ???
+  val dogs: LazyList[Dog] =
+    LazyList.iterate(Dog(s"dog-$uuid", rnd.nextInt(15), rnd.nextBoolean()))(_ =>
+      Dog(s"dog-$uuid", rnd.nextInt(15), rnd.nextBoolean())
+    )
 
-  def healthyDogs(dogs: LazyList[Dog]): LazyList[Dog] = ???
+  def healthyDogs(dogs: LazyList[Dog]): LazyList[Dog] =
+    dogs.filter(d => d.hasCurrentShots)
 
-  def averageHealthyAge(allDogs: LazyList[Dog], sampleSize: Int): Double = ???
+  def averageHealthyAge(allDogs: LazyList[Dog], sampleSize: Int): Double =
+    healthyDogs(allDogs)
+      .map(d => d.age)
+      .take(sampleSize)
+      .sum
+      .toDouble / sampleSize.toDouble
 
 }
