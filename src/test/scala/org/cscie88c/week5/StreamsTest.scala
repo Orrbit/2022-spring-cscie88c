@@ -14,7 +14,8 @@ class StreamsTest extends StandardTest {
 
     "return a correct sample of healthy dogs" in {
       val testDogStream = LazyList.continually(Dog("dog", 3, true))
-      val testDogAverageHealthyAge: Double = Streams.averageHealthyAge(testDogStream, 5);
+      val testDogAverageHealthyAge: Double =
+        Streams.averageHealthyAge(testDogStream, 5);
       testDogAverageHealthyAge should be(3)
     }
   }
