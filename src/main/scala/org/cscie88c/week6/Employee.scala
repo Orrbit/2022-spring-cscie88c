@@ -8,10 +8,15 @@ final case class Employee(
 
 object Employee {
 
-  implicit val employeeOrdering: Ordering[Employee] = ???
+  implicit val employeeOrdering: Ordering[Employee] =
+    Ordering.by[Employee, String](emp => emp.name)
 
-  def defaultSortEmployees(employees: List[Employee]): List[Employee] = ???
+  def defaultSortEmployees(employees: List[Employee]): List[Employee] =
+    employees.sorted
 
-  def sortEmployeesBySalary(employees: List[Employee]): List[Employee] = ???
+  def sortEmployeesBySalary(employees: List[Employee]): List[Employee] = {
+    val employeeSalOrdering = Ordering.by[Employee, Int](emp => -emp.salary)
+    employees.sorted(employeeSalOrdering)
+  }
 
 }
