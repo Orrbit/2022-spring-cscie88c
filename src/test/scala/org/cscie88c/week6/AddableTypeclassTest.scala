@@ -6,13 +6,12 @@ class AddableTypeclassTest extends StandardTest {
 
   "AddableAggregator" should {
     "sum a list of integers" in {
-      // add your unit tests here
+      val testList = 2 :: 5 :: 10 :: 3 :: Nil
+      AddableAggregator.sumWithAddable(testList) should be(20)
     }
     "sum a list of booleans" in {
-      // add your unit tests here
-    }
-    "sum a list of employees" in {
-      // add your unit tests here
+      val testList = false :: false :: true :: false :: Nil
+      AddableAggregator.sumWithAddable(testList) should be(true)
     }
   }
 }
