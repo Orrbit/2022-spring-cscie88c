@@ -13,5 +13,12 @@ class AddableTypeclassTest extends StandardTest {
       val testList = false :: false :: true :: false :: Nil
       AddableAggregator.sumWithAddable(testList) should be(true)
     }
+    "sum a list of employees" in {
+      val testList =
+        Employee("ken", 25, 80000) :: Employee("burns", 35, 90000) :: Nil
+      AddableAggregator.sumWithAddable(testList) should be(
+        Employee("ken, burns", 60, 170000)
+      )
+    }
   }
 }

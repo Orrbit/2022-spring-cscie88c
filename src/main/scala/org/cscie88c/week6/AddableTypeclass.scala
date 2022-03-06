@@ -17,6 +17,20 @@ object AddableTypeclass {
       def addTwoValues(a: Boolean, b: Boolean): Boolean = a || b
     }
 
+  implicit val strAddableTypeclass: AddableTypeclass[String] =
+    new AddableTypeclass[String] {
+      def addTwoValues(a: String, b: String): String = s"$a, $b"
+    }
+
+  implicit val empAddableTypeclass: AddableTypeclass[Employee] =
+    new AddableTypeclass[Employee] {
+      def addTwoValues(a: Employee, b: Employee): Employee = Employee(
+        strAddableTypeclass.addTwoValues(a.name, b.name),
+        intAddableTypeclass.addTwoValues(a.age, b.age),
+        intAddableTypeclass.addTwoValues(a.salary, b.salary)
+      )
+    }
+
 }
 
 object AddableAggregator {
