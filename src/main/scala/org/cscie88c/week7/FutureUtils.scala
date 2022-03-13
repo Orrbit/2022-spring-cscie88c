@@ -3,6 +3,7 @@ package org.cscie88c.week7
 import scala.concurrent.{Future}
 import scala.util.{Try, Success, Failure}
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.collection.parallel.CollectionConverters._
 import scala.util.Random
 
 object FutureUtils {
@@ -37,10 +38,13 @@ object FutureUtils {
     Future.traverse(idList){creditScoreAPI(_)}.map(allScoresFuture => allScoresFuture.sum.toDouble / allScoresFuture.length.toDouble)
   }
 
-  // def slowMultiplication(x: Long, y: Long): Long = ???
+  def slowMultiplication(x: Long, y: Long): Long = {
+    Thread.sleep(1000)
+    x * y
+  }
 
-  // def concurrentFactorial(n: Long): Long = ???
+  def concurrentFactorial(n: Long): Long = (1L to n).toList.par.reduce((acc, curr) => slowMultiplication(acc, curr))
 
-  // def sequentialFactorial(n: Long): Long = ???
+  def sequentialFactorial(n: Long): Long = (1L to n).toList.reduce((acc, curr) => slowMultiplication(acc, curr))
 
 }
