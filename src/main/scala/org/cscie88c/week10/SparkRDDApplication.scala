@@ -54,11 +54,10 @@ object SparkRDDApplication {
 
   def transactionsAmountsByYear(
       transactions: RDD[CustomerTransaction]
-    ): RDD[(String, Double)] = {
+    ): RDD[(String, Double)] =
     transactions
       .map(f => (f.transactionYear, f.transactionAmount))
       .reduceByKey((a, b) => a + b)
-  }
 
   def printTransactionsAmountsByYear(
       transactions: RDD[(String, Double)]

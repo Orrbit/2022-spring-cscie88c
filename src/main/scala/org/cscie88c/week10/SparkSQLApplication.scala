@@ -11,24 +11,42 @@ import org.apache.spark.sql.functions.{ when }
 // run with: sbt "runMain org.cscie88c.week10.SparkSQLApplication"
 object SparkSQLApplication {
 
-  // def main(args: Array[String]): Unit = {
-  //   implicit val conf:SparkDSConfig = readConfig()
-  //   val spark = SparkUtils.sparkSession(conf.name, conf.masterUrl)
-  //   val transactionDF = loadData(spark)
-  //   val augmentedTransactionsDF = addCategoryColumn(transactionDF)
-  //   augmentedTransactionsDF.createOrReplaceTempView("transactions")
-  //   val sparkSQL = ???
-  //   val totalsByCategoryDF = spark.sql(sparkSQL)
-  //   printTransactionTotalsByCategory(totalsByCategoryDF)
-  //   spark.stop()
-  // }
+  val APP_CONFIG_PATH = "org.cscie88c.spark-ds-application"
 
-  // def readConfig(): SparkDSConfig = ???
+  def main(args: Array[String]): Unit = {
+    implicit val conf: SparkDSConfig = readConfig()
+    val spark = SparkUtils.sparkSession(conf.name, conf.masterUrl)
+    val transactionDF = loadData(spark)
+    val augmentedTransactionsDF = addCategoryColumn(transactionDF)
+    augmentedTransactionsDF.createOrReplaceTempView("transactions")
+    val sparkSQL =
+      "SELECT category, sum(tran_amount) FROM transactions GROUP BY category"
+    val totalsByCategoryDF = spark.sql(sparkSQL)
+    printTransactionTotalsByCategory(totalsByCategoryDF)
+    spark.stop()
+  }
 
-  // def loadData(spark: SparkSession)(implicit conf: SparkDSConfig): DataFrame = ???
+  def readConfig(): SparkDSConfig =
+    ConfigUtils.loadAppConfig[SparkDSConfig](APP_CONFIG_PATH)
 
-  // def addCategoryColumn(raw: DataFrame): DataFrame = ???
+  def loadData(spark: SparkSession)(implicit conf: SparkDSConfig): DataFrame =
+    spark
+      .read
+      .format("csv")
+      .option("header", "true")
+      .option("inferSchema", "true")
+      .load(conf.transactionFile)
 
-  // def printTransactionTotalsByCategory(df: DataFrame): Unit = ???
+  def addCategoryColumn(raw: DataFrame): DataFrame = {
+    import org.apache.spark.sql.functions.when
+    import org.apache.spark.sql.functions.col
+    raw.withColumn(
+      "category",
+      when(col("tran_amount") > 80, "High").otherwise("Standard")
+    )
+  }
+
+  def printTransactionTotalsByCategory(df: DataFrame): Unit =
+    df.foreach(println)
 
 }
