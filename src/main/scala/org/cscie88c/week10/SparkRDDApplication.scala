@@ -55,10 +55,8 @@ object SparkRDDApplication {
   def transactionsAmountsByYear(
       transactions: RDD[CustomerTransaction]
     ): RDD[(String, Double)] = {
-    val get_year_of_date: String => String = s =>
-      s.slice(s.lastIndexOf("-") + 1, s.size)
     transactions
-      .map(f => (get_year_of_date(f.transactionDate), f.transactionAmount))
+      .map(f => (f.transactionYear, f.transactionAmount))
       .reduceByKey((a, b) => a + b)
   }
 
