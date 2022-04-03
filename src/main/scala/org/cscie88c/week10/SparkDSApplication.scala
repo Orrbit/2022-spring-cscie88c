@@ -8,26 +8,55 @@ import org.apache.spark.sql.{ Dataset }
 import pureconfig.generic.auto._
 
 // write config case class below
-// case class SparkDSConfig()
+case class SparkDSConfig(
+    name: String,
+    masterUrl: String,
+    transactionFile: String
+  )
 
 // run with: sbt "runMain org.cscie88c.week10.SparkDSApplication"
 object SparkDSApplication {
 
-  // application main entry point
-  // def main(args: Array[String]): Unit = {
-  //   implicit val conf:SparkDSConfig = readConfig()
-  //   val spark = SparkUtils.sparkSession(conf.name, conf.masterUrl)
-  //   val transactionDS = loadData(spark)
-  //   val totalsByCategoryDS = transactionTotalsByCategory(spark,transactionDS)
-  //   printTransactionTotalsByCategory(totalsByCategoryDS)
-  //   spark.stop()
-  // }
+  val APP_CONFIG_PATH = "org.cscie88c.spark-ds-application"
 
-  // def readConfig(): SparkDSConfig = ???
+  def main(args: Array[String]): Unit = {
+    implicit val conf: SparkDSConfig = readConfig()
+    val spark = SparkUtils.sparkSession(conf.name, conf.masterUrl)
+    val transactionDS = loadData(spark)
+    val totalsByCategoryDS = transactionTotalsByCategory(spark, transactionDS)
+    printTransactionTotalsByCategory(totalsByCategoryDS)
+    spark.stop()
+  }
 
-  // def loadData(spark: SparkSession)(implicit conf: SparkDSConfig): Dataset[CustomerTransaction] = ???
+  def readConfig(): SparkDSConfig =
+    ConfigUtils.loadAppConfig[SparkDSConfig](APP_CONFIG_PATH)
 
-  // def transactionTotalsByCategory(spark: SparkSession, transactions: Dataset[CustomerTransaction]): Dataset[(String, Double)] = ???
+  def loadData(
+      spark: SparkSession
+    )(implicit
+      conf: SparkDSConfig
+    ): Dataset[CustomerTransaction] = {
+    import spark.implicits._
+    spark
+      .read
+      .format("csv")
+      .option("header", "true")
+      .option("inferSchema", "true")
+      .load(conf.transactionFile)
+      .as[RawTransaction]
+      .map(CustomerTransaction(_))
+  }
+  def transactionTotalsByCategory(
+      spark: SparkSession,
+      transactions: Dataset[CustomerTransaction]
+    ): Dataset[(String, Double)] = {
+    import spark.implicits._
+    transactions
+      .groupByKey(c => c.transactionCategory)
+      .mapValues(_.transactionAmount)
+      .reduceGroups((a, b) => a + b)
+  }
 
-  // def printTransactionTotalsByCategory(ds: Dataset[(String, Double)]): Unit = ???
+  def printTransactionTotalsByCategory(ds: Dataset[(String, Double)]): Unit =
+    ds.foreach(println)
 }
