@@ -42,17 +42,25 @@ object SparkAverageTransactionAggregateJob extends LazyLogging {
       conf: SparkAverageTransactionAggregateJobConfig
     ): Unit = {
     val transactionDS: Dataset[RawTransaction] = loadTransactionData(spark)
-    // val responseDS: Dataset[RawResponse] = loadCampaignResponseData(spark)
+    val responseDS: Dataset[RawResponse] = loadCampaignResponseData(spark)
     val averageTransactionById: Map[String, AverageTransactionAggregate] =
       aggregateDataWithMonoid(transactionDS)
-    // val customersInCampaign: Dataset[RawTransaction] = joinTransactionAndResponseData(responseDS, transactionDS)
-    // val averageTransactionForCampaign: Map[String,AverageTransactionAggregate] = aggregateDataWithMonoid(customersInCampaign)
+    val customersInCampaign: Dataset[RawTransaction] =
+      joinTransactionAndResponseData(responseDS, transactionDS)
+    val averageTransactionForCampaign
+        : Map[String, AverageTransactionAggregate] = aggregateDataWithMonoid(
+      customersInCampaign
+    )
     saveAverageTransactionByCustomerId(
       spark,
       averageTransactionById,
       conf.outputPathTransaction
     )
-    // saveAverageTransactionByCustomerId(spark,averageTransactionForCampaign, conf.outputPathResponseTransaction)
+    saveAverageTransactionByCustomerId(
+      spark,
+      averageTransactionForCampaign,
+      conf.outputPathResponseTransaction
+    )
     // saveAverageTransactionAsParquet(spark,averageTransactionById, conf.outputPathTransaction)
   }
 
@@ -71,7 +79,20 @@ object SparkAverageTransactionAggregateJob extends LazyLogging {
       .as[RawTransaction]
   }
 
-  // def loadCampaignResponseData(spark: SparkSession)(implicit conf: SparkAverageTransactionAggregateJobConfig): Dataset[RawResponse] = ???
+  def loadCampaignResponseData(
+      spark: SparkSession
+    )(implicit
+      conf: SparkAverageTransactionAggregateJobConfig
+    ): Dataset[RawResponse] = {
+    import spark.implicits._
+    spark
+      .read
+      .format("csv")
+      .option("header", "true")
+      .option("inferSchema", "true")
+      .load(conf.inputPathResponse)
+      .as[RawResponse]
+  }
 
   def aggregateDataWithMonoid(
       transactionDS: Dataset[RawTransaction]
@@ -84,7 +105,20 @@ object SparkAverageTransactionAggregateJob extends LazyLogging {
       .reduce(_ |+| _)
   }
 
-  // def joinTransactionAndResponseData(responseDS: Dataset[RawResponse], transactionDS: Dataset[RawTransaction]): Dataset[RawTransaction] = ???
+  def joinTransactionAndResponseData(
+      responseDS: Dataset[RawResponse],
+      transactionDS: Dataset[RawTransaction]
+    ): Dataset[RawTransaction] = {
+    import transactionDS.sparkSession.implicits._
+    responseDS
+      .filter(_.response == 1)
+      .joinWith(
+        transactionDS,
+        responseDS("customer_id") === transactionDS("customer_id"),
+        "inner"
+      )
+      .map(_._2)
+  }
 
   def saveAverageTransactionByCustomerId(
       spark: SparkSession,
