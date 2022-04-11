@@ -37,3 +37,5 @@ project/plugins/project/
 
 scalaHomework.zip
 
+*.jar
+docker/spark/data
